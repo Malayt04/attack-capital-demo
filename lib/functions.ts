@@ -1,28 +1,63 @@
+import { AgentResponse } from "./mock-data";
+
 const token = process.env.OPENMIC_API_KEY;
 
 export interface OpenMicAgent {
   name: string;
   prompt: string;
   first_message: string;
-  knowledge_base_id: string;
-}
-
-export interface AgentResponse {
-  id: string;
-  name: string;
-  uid: string;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface CallLog {
-  id: string;
-  bot_id: string;
-  status: string;
-  duration: number;
-  created_at: string;
-  transcript?: string;
-  summary?: string;
+  call_type: string;
+  from_number: string;
+  to_number: string;
+  direction: string;
+  call_id: string;
+  agent_id: string;
+  call_status: string;
+  customer_id?: string;
+  start_timestamp: number;
+  end_timestamp: number;
+  duration_ms: number;
+  transcript?: [string, string][];
+  recording_url?: string;
+  latency?: {
+    e2e_min_latency: number;
+    e2e_median_latency: number;
+    e2e_p90_latency: number;
+    llm_min_latency: number;
+    llm_median_latency: number;
+    llm_p90_latency: number;
+    tts_min_latency: number;
+    tts_median_latency: number;
+    tts_p90_latency: number;
+  };
+  call_analysis?: {
+    summary: string;
+    is_successful: boolean;
+    success_evaluation: string;
+    extracted_data: any;
+  };
+  call_cost?: {
+    total_cost: number;
+    llm_cost: number;
+    tts_cost: number;
+    stt_cost: number;
+  };
+  dynamic_variables?: {
+    [key: string]: any;
+  };
+}
+
+export interface CallLogsResponse {
+  calls: CallLog[];
+  pagination: {
+    limit: number;
+    offset: number;
+    total: number;
+    has_more: boolean;
+  };
 }
 
 export const createAgent = async (
@@ -33,7 +68,6 @@ export const createAgent = async (
     name: agent.name,
     prompt: agent.prompt,
     first_message: agent.first_message,
-    knowledge_base_id: agent.knowledge_base_id,
     voice_provider: "OpenAI",
     voice: "alloy",
     voice_model: "tts-1",
@@ -178,7 +212,9 @@ export const getAllAgents = async (): Promise<AgentResponse[] | null> => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    return data.data || data; // Handle different response formats
+    console.log("Full response:", data);
+    console.log("Bots array:", data.bots);
+    return data.bots || data.data || data; // Access bots array from response
   } catch (error) {
     console.error("Error fetching agents:", error);
     return null;
@@ -199,8 +235,10 @@ export const getLogs = async (agentId: string): Promise<CallLog[] | null> => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
-    return data.data || data; // Handle different response formats
+    const data: CallLogsResponse = await response.json();
+    console.log("Full response:", data);
+    console.log("Calls array:", data.calls);
+    return data.calls || [];
   } catch (error) {
     console.error("Error fetching logs:", error);
     return null;

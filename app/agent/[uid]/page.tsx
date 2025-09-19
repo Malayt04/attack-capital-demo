@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Log } from "@/lib/mock-data";
-import { getAgent, getLogs, AgentResponse, CallLog } from "@/lib/functions";
+import { AgentResponse } from "@/lib/mock-data";
+import { getAgent, getLogs, CallLog } from "@/lib/functions";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 interface AgentLogsPageProps {
@@ -29,22 +29,20 @@ export default function AgentLogsPage({ params }: AgentLogsPageProps) {
   const [logs, setLogs] = useState<CallLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchAgentAndLogs();
-  }, [uid]);
-
-  const fetchAgentAndLogs = async () => {
+  const fetchAgentAndLogs = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
       // Fetch agent details
+      console.log(uid);
       const agentData = await getAgent(uid);
+      console.log(agentData);
       if (agentData) {
         setAgent(agentData);
 
         // Fetch logs for this agent
+        console.log(uid);
         const logsData = await getLogs(uid);
         if (logsData) {
           setLogs(logsData);
@@ -60,7 +58,12 @@ export default function AgentLogsPage({ params }: AgentLogsPageProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [uid]);
+  useEffect(() => {
+    fetchAgentAndLogs();
+  }, [fetchAgentAndLogs]);
+
+
 
   const handleLogClick = (logId: string) => {
     router.push(`/agent/${uid}/log/${logId}`);
@@ -117,10 +120,7 @@ export default function AgentLogsPage({ params }: AgentLogsPageProps) {
 
           <div className="mb-4">
             <h1 className="text-3xl font-bold">{agent.name}</h1>
-            <p className="text-muted-foreground">
-              UID: {agent.uid} | Created:{" "}
-              {new Date(agent.created_at).toLocaleDateString()}
-            </p>
+            <p className="text-muted-foreground">UID: {agent.uid}</p>
           </div>
         </div>
 
@@ -128,48 +128,79 @@ export default function AgentLogsPage({ params }: AgentLogsPageProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Call ID</TableHead>
+                <TableHead>From Number</TableHead>
+                <TableHead>To Number</TableHead>
+                <TableHead>Direction</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Duration</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Transcript Preview</TableHead>
+                <TableHead>Success</TableHead>
+                <TableHead>Cost</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {logs.map((log) => (
                 <TableRow
-                  key={log.id}
+                  key={log.call_id}
                   className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleLogClick(log.id)}
+                  onClick={() => handleLogClick(log.call_id)}
                 >
-                  <TableCell className="font-medium">{log.id}</TableCell>
+                  <TableCell className="font-medium">
+                    {log.from_number}
+                  </TableCell>
+                  <TableCell>{log.to_number}</TableCell>
                   <TableCell>
-                    {new Date(log.created_at).toLocaleString()}
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        log.direction === "inbound"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-purple-100 text-purple-800"
+                      }`}
+                    >
+                      {log.direction}
+                    </span>
                   </TableCell>
                   <TableCell>
-                    {log.duration
-                      ? `${Math.floor(log.duration / 60)}:${(log.duration % 60)
-                          .toString()
-                          .padStart(2, "0")}`
-                      : "N/A"}
+                    {new Date(log.start_timestamp).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    {Math.floor(log.duration_ms / 60000)}:
+                    {Math.floor((log.duration_ms % 60000) / 1000)
+                      .toString()
+                      .padStart(2, "0")}
                   </TableCell>
                   <TableCell>
                     <span
                       className={`px-2 py-1 rounded-full text-xs ${
-                        log.status === "completed"
+                        log.call_status === "ended"
                           ? "bg-green-100 text-green-800"
-                          : log.status === "failed"
+                          : log.call_status === "failed"
                           ? "bg-red-100 text-red-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
-                      {log.status}
+                      {log.call_status}
                     </span>
                   </TableCell>
-                  <TableCell className="max-w-xs truncate">
-                    {log.transcript
-                      ? log.transcript.substring(0, 100) + "..."
-                      : "No transcript available"}
+                  <TableCell>
+                    {log.call_analysis ? (
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          log.call_analysis.is_successful
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {log.call_analysis.success_evaluation}
+                      </span>
+                    ) : (
+                      "N/A"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {log.call_cost
+                      ? `$${log.call_cost.total_cost.toFixed(4)}`
+                      : "N/A"}
                   </TableCell>
                 </TableRow>
               ))}

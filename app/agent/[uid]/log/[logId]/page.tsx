@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { getAgent, getLogById, AgentResponse, CallLog } from "@/lib/functions";
@@ -21,12 +21,7 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
   const [log, setLog] = useState<CallLog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchAgentAndLog();
-  }, [uid, logId]);
-
-  const fetchAgentAndLog = async () => {
+  const fetchAgentAndLog = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -54,8 +49,13 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [uid, logId]);
 
+  useEffect(() => {
+    fetchAgentAndLog();
+  }, [fetchAgentAndLog]);
+
+ 
   const handleBackToLogs = () => {
     router.push(`/agent/${uid}`);
   };

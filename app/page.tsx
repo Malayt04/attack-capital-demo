@@ -28,13 +28,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Agent } from "@/lib/mock-data";
-import {
-  createAgent,
-  deleteAgent,
-  getAllAgents,
-  AgentResponse,
-} from "@/lib/functions";
+import { Agent, AgentResponse } from "@/lib/mock-data";
+import { createAgent, deleteAgent, getAllAgents } from "@/lib/functions";
 import { Plus, Eye, Trash2, Loader2 } from "lucide-react";
 
 export default function HomePage() {
@@ -50,7 +45,6 @@ export default function HomePage() {
     domain: "",
     prompt: "",
     first_message: "",
-    knowledge_base_id: "",
   });
 
   // Fetch agents on component mount
@@ -65,12 +59,13 @@ export default function HomePage() {
       const response = await getAllAgents();
       if (response) {
         // Convert API response to our Agent interface
+        console.log("Response from getAllAgents:", response);
         const convertedAgents: Agent[] = response.map(
           (apiAgent: AgentResponse) => ({
             id: apiAgent.id,
             name: apiAgent.name,
             domain: "General", // Default domain since API doesn't provide this
-            prompt: "", // API doesn't return prompt in list view
+            prompt: apiAgent.prompt || "", // Use prompt from API if available
             uid: apiAgent.uid,
           })
         );
@@ -91,8 +86,7 @@ export default function HomePage() {
       formData.name &&
       formData.domain &&
       formData.prompt &&
-      formData.first_message &&
-      formData.knowledge_base_id
+      formData.first_message
     ) {
       setIsCreating(true);
       setError(null);
@@ -102,7 +96,6 @@ export default function HomePage() {
           name: formData.name,
           prompt: formData.prompt,
           first_message: formData.first_message,
-          knowledge_base_id: formData.knowledge_base_id,
         });
 
         if (newAgent) {
@@ -120,7 +113,6 @@ export default function HomePage() {
             domain: "",
             prompt: "",
             first_message: "",
-            knowledge_base_id: "",
           });
           setIsDialogOpen(false);
         } else {
@@ -235,20 +227,6 @@ export default function HomePage() {
                     placeholder="Enter first message"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="knowledge_base_id">Knowledge Base ID</Label>
-                  <Input
-                    id="knowledge_base_id"
-                    value={formData.knowledge_base_id}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        knowledge_base_id: e.target.value,
-                      })
-                    }
-                    placeholder="Enter knowledge base ID"
-                  />
-                </div>
               </div>
               <div className="flex justify-end gap-2">
                 <Button
@@ -265,7 +243,6 @@ export default function HomePage() {
                     !formData.domain ||
                     !formData.prompt ||
                     !formData.first_message ||
-                    !formData.knowledge_base_id ||
                     isCreating
                   }
                 >
@@ -307,7 +284,7 @@ export default function HomePage() {
               </TableHeader>
               <TableBody>
                 {agents.map((agent) => (
-                  <TableRow key={agent.id}>
+                  <TableRow key={agent.uid}>
                     <TableCell className="font-medium">{agent.name}</TableCell>
                     <TableCell>{agent.domain}</TableCell>
                     <TableCell className="font-mono text-sm">

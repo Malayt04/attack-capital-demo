@@ -1,3 +1,5 @@
+
+
 export interface Agent {
   id: string;
   name: string;
@@ -6,206 +8,70 @@ export interface Agent {
   uid: string;
 }
 
-export interface Log {
+export interface AgentResponse {
   id: string;
-  callId: string;
-  date: string;
-  duration: string;
-  transcript: string;
-  summary: string;
-  timeTaken: string;
+  uid: string;
+  name: string;
+  prompt: string;
+  first_message: string;
+  knowledge_base_id?: number;
+  [key: string]: any; 
 }
-
 
 export const mockMedicalCustomerData = [
   {
     id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1234567890",
-    address: "123 Main St, Anytown, USA",
-    city: "Anytown",
-    state: "CA",
-    zip: "12345",
-    country: "USA",
-    createdAt: "2024-01-15 10:30:00",
-    updatedAt: "2024-01-15 10:30:00",
-    lastContacted: "2024-01-15 10:30:00",
-    notes: "Customer has a history of purchasing our products.",
-    tags: ["Customer", "Purchaser"],
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    phone: "+1987654321",
-    address: "456 Oak Ave, Springfield, USA",
-    city: "Springfield",
-    state: "TX",
-    zip: "54321",
-    country: "USA",
-    createdAt: "2024-02-20 14:15:00",
-    updatedAt: "2024-02-20 14:15:00",
-    lastContacted: "2024-02-25 09:30:00",
-    notes: "Interested in premium subscription plan.",
-    tags: ["Lead", "Newsletter"],
-    status: "Active",
-  },
-  {
-    id: "3",
-    name: "Robert Johnson",
-    email: "robert.johnson@example.com",
-    phone: "+1123456789",
-    address: "789 Pine Rd, Centerville, USA",
-    city: "Centerville",
-    state: "NY",
-    zip: "67890",
-    country: "USA",
-    createdAt: "2024-03-10 11:00:00",
-    updatedAt: "2024-03-10 11:00:00",
-    lastContacted: "2024-03-12 16:45:00",
-    notes: "Requested a product demo.",
-    tags: ["Prospect", "Demo"],
-    status: "Pending",
+    name: "Malay Tiwari",
+    email: "test.web@example.com",
+    phone: "web_call",
+    address: "Test Address, Web City, USA",
+    notes: "Suffering from seasonal allergies.",
   },
   {
     id: "4",
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "+1555123456",
-    address: "321 Cedar Blvd, Lakeside, USA",
-    city: "Lakeside",
-    state: "FL",
-    zip: "13579",
-    country: "USA",
-    createdAt: "2024-04-05 09:20:00",
-    updatedAt: "2024-04-05 09:20:00",
-    lastContacted: "2024-04-08 15:00:00",
-    notes: "Long-term customer interested in bulk discounts.",
-    tags: ["Customer", "VIP"],
-    status: "Active",
-  },
-  {
-    id: "5",
-    name: "Michael Brown",
-    email: "michael.brown@example.com",
-    phone: "+1444555666",
-    address: "654 Willow St, Riverdale, USA",
-    city: "Riverdale",
-    state: "IL",
-    zip: "24680",
-    country: "USA",
-    createdAt: "2024-05-15 13:40:00",
-    updatedAt: "2024-05-15 13:40:00",
-    lastContacted: "2024-05-18 11:10:00",
-    notes: "Recently upgraded to premium membership.",
-    tags: ["Customer", "Premium"],
-    status: "Active",
-  },
-  {
-    id: "6",
-    name: "Sophia Martinez",
-    email: "sophia.martinez@example.com",
-    phone: "+1999888777",
-    address: "987 Birch Ln, Hillview, USA",
-    city: "Hillview",
-    state: "WA",
-    zip: "97531",
-    country: "USA",
-    createdAt: "2024-06-25 08:50:00",
-    updatedAt: "2024-06-25 08:50:00",
-    lastContacted: "2024-06-27 14:25:00",
-    notes: "Referred by an existing customer.",
-    tags: ["Referral", "New"],
-    status: "Active",
+    name: "Mayank Dhanik",
+    email: "web.client@example.com",
+    phone: "Web-Client-1148",
+    address: "Web Client Address, Test City, USA",
+    notes: "Suffering from chronic back pain.",
   },
 ];
 
 export const mockLegalCustomerData = [
   {
-    "id": "301",
-    "name": "James Wilson",
-    "email": "james.wilson@example.com",
-    "phone": "+1555900001",
-    "address": "101 Liberty St, Boston, USA",
-    "city": "Boston",
-    "state": "MA",
-    "zip": "02110",
-    "country": "USA",
-    "createdAt": "2024-09-05 10:00:00",
-    "updatedAt": "2024-09-05 10:00:00",
-    "lastContacted": "2024-09-07 14:30:00",
-    "notes": "Requested legal assistance for a business contract dispute.",
-    "tags": ["Customer", "Legal", "Contract"],
-    "status": "Active"
+    id: "303",
+    name: "Monica Geller",
+    email: "legal.web@example.com",
+    phone: "web_call",
+    address: "Legal Test Address, Web City, USA",
+    notes: "Case related to intellectual property dispute.",
   },
   {
-    "id": "302",
-    "name": "Olivia Bennett",
-    "email": "olivia.bennett@example.com",
-    "phone": "+1555900002",
-    "address": "45 Court Ave, Phoenix, USA",
-    "city": "Phoenix",
-    "state": "AZ",
-    "zip": "85004",
-    "country": "USA",
-    "createdAt": "2024-09-06 09:20:00",
-    "updatedAt": "2024-09-06 09:20:00",
-    "lastContacted": "2024-09-08 11:10:00",
-    "notes": "Needs help reviewing a non-disclosure agreement.",
-    "tags": ["Customer", "Legal", "NDA"],
-    "status": "Pending"
+    id: "304",
+    name: "Jhon Doe",
+    email: "legal.client@example.com",
+    phone: "Web-Client-1148",
+    address: "Legal Client Address, Test City, USA",
+    notes: "Case related to contract law.",
+  },
+];
+
+export const mockReceptionistCustomerData = [
+  {
+    id: "401",
+    name: "William Davis",
+    email: "william.davis@example.com",
+    phone: "web_call",
+    address: "123 Main St, Anytown, USA",
+    notes: "Requested receptionist assistance for a business contract dispute.",
   },
   {
-    "id": "303",
-    "name": "Daniel Adams",
-    "email": "daniel.adams@example.com",
-    "phone": "+1555900003",
-    "address": "222 Justice Blvd, Chicago, USA",
-    "city": "Chicago",
-    "state": "IL",
-    "zip": "60601",
-    "country": "USA",
-    "createdAt": "2024-09-07 13:45:00",
-    "updatedAt": "2024-09-07 13:45:00",
-    "lastContacted": "2024-09-09 16:00:00",
-    "notes": "Asked for consultation on regulatory compliance.",
-    "tags": ["Customer", "Legal", "Compliance"],
-    "status": "Active"
+    id: "402",
+    name: "Sophia Martinez",
+    email: "sophia.martinez@example.com",
+    phone: "Web-Client-1148",
+    address: "456 Oak Ave, Springfield, USA",
+    notes:
+      "Requested receptionist assistance for creating meeting with the CEO.",
   },
-  {
-    "id": "304",
-    "name": "Hannah Lee",
-    "email": "hannah.lee@example.com",
-    "phone": "+1555900004",
-    "address": "78 Arbitration Rd, Seattle, USA",
-    "city": "Seattle",
-    "state": "WA",
-    "zip": "98101",
-    "country": "USA",
-    "createdAt": "2024-09-08 08:50:00",
-    "updatedAt": "2024-09-08 08:50:00",
-    "lastContacted": "2024-09-10 12:25:00",
-    "notes": "Filed a request for arbitration support in a labor dispute.",
-    "tags": ["Customer", "Legal", "Arbitration"],
-    "status": "Active"
-  },
-  {
-    "id": "305",
-    "name": "Michael Turner",
-    "email": "michael.turner@example.com",
-    "phone": "+1555900005",
-    "address": "5 Law Park, Denver, USA",
-    "city": "Denver",
-    "state": "CO",
-    "zip": "80202",
-    "country": "USA",
-    "createdAt": "2024-09-09 11:30:00",
-    "updatedAt": "2024-09-09 11:30:00",
-    "lastContacted": "2024-09-11 15:15:00",
-    "notes": "Wants help preparing documents for a trademark application.",
-    "tags": ["Customer", "Legal", "Trademark"],
-    "status": "Active"
-  }
-]
+];
