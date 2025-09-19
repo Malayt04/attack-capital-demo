@@ -3,15 +3,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { getAgent, getLogById, AgentResponse, CallLog } from "@/lib/functions";
+import { getAgent, getLogById, CallLog } from "@/lib/functions";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { AgentResponse } from "@/lib/mock-data";
 
 interface LogDetailsPageProps {
   params: {
     uid: string;
     logId: string;
   };
-}
+    }
 
 export default function LogDetailsPage({ params }: LogDetailsPageProps) {
   const router = useRouter();
@@ -108,7 +109,7 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
           <div className="mb-6">
             <h1 className="text-3xl font-bold mb-2">Call Details</h1>
             <p className="text-muted-foreground">
-              Agent: {agent.name} | Call ID: {log.id}
+              Agent: {agent.name} | Call ID: {log.call_id}
             </p>
           </div>
         </div>
@@ -122,14 +123,14 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
                 <label className="text-sm font-medium text-muted-foreground">
                   Call ID
                 </label>
-                <p className="text-lg font-mono">{log.id}</p>
+                <p className="text-lg font-mono">{log.call_id}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
                   Date & Time
                 </label>
                 <p className="text-lg">
-                  {new Date(log.created_at).toLocaleString()}
+                  {new Date(log.start_timestamp).toLocaleString()}
                 </p>
               </div>
               <div>
@@ -137,8 +138,8 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
                   Duration
                 </label>
                 <p className="text-lg">
-                  {log.duration
-                    ? `${Math.floor(log.duration / 60)}:${(log.duration % 60)
+                  {log.duration_ms
+                    ? `${Math.floor(log.duration_ms / 60_000)}:${((log.duration_ms / 1000) % 60)
                         .toString()
                         .padStart(2, "0")}`
                     : "N/A"}
@@ -151,14 +152,12 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
                 <p className="text-lg">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
-                      log.status === "completed"
+                      log.call_status === "ended"
                         ? "bg-green-100 text-green-800"
-                        : log.status === "failed"
-                        ? "bg-red-100 text-red-800"
                         : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
-                    {log.status}
+                    {log.call_status}
                   </span>
                 </p>
               </div>
@@ -166,10 +165,10 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
           </div>
 
           {/* Summary */}
-          {log.summary && (
+          {log.call_analysis?.summary && (
             <div className="rounded-md border p-6">
               <h2 className="text-xl font-semibold mb-4">Summary</h2>
-              <p className="text-foreground leading-relaxed">{log.summary}</p>
+              <p className="text-foreground leading-relaxed">{log.call_analysis.summary}</p>
             </div>
           )}
 
@@ -178,7 +177,14 @@ export default function LogDetailsPage({ params }: LogDetailsPageProps) {
             <h2 className="text-xl font-semibold mb-4">Full Transcript</h2>
             <div className="bg-muted/50 rounded-md p-4">
               <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {log.transcript || "No transcript available for this call."}
+                {log.transcript && log.transcript.length > 0
+                  ? log.transcript.map(([speaker, text], idx) => (
+                      <span key={idx}>
+                        <strong>{speaker}:</strong> {text}
+                        <br />
+                      </span>
+                    ))
+                  : "No transcript available for this call."}
               </p>
             </div>
           </div>

@@ -26,6 +26,7 @@ export const mockMedicalCustomerData = [
     phone: "web_call",
     address: "Test Address, Web City, USA",
     notes: "Suffering from seasonal allergies.",
+    doctorName: "John Doe"
   },
   {
     id: "4",
@@ -34,44 +35,32 @@ export const mockMedicalCustomerData = [
     phone: "Web-Client-1148",
     address: "Web Client Address, Test City, USA",
     notes: "Suffering from chronic back pain.",
+    doctorName: "John Doe"
   },
 ];
 
-export const mockLegalCustomerData = [
+export const mockDoctorData = [
   {
-    id: "303",
-    name: "Monica Geller",
-    email: "legal.web@example.com",
+    id: "1",
+    name: "John Doe",
+    email: "test.web@example.com",
     phone: "web_call",
-    address: "Legal Test Address, Web City, USA",
-    notes: "Case related to intellectual property dispute.",
-  },
-  {
-    id: "304",
-    name: "Jhon Doe",
-    email: "legal.client@example.com",
-    phone: "Web-Client-1148",
-    address: "Legal Client Address, Test City, USA",
-    notes: "Case related to contract law.",
-  },
-];
+    freeHours: "9:00 AM - 5:00 PM on Monday to Friday",
+    address: "Test Address, Web City, USA",
+    notes: "Suffering from seasonal allergies.",
+  }
+]
 
-export const mockReceptionistCustomerData = [
+
+
+
+export const mockIllnessData = [
   {
-    id: "401",
-    name: "William Davis",
-    email: "william.davis@example.com",
-    phone: "web_call",
-    address: "123 Main St, Anytown, USA",
-    notes: "Requested receptionist assistance for a business contract dispute.",
+    name: "headache",
+    medicine: ["disprin", "ibuprofen"],
   },
   {
-    id: "402",
-    name: "Sophia Martinez",
-    email: "sophia.martinez@example.com",
-    phone: "Web-Client-1148",
-    address: "456 Oak Ave, Springfield, USA",
-    notes:
-      "Requested receptionist assistance for creating meeting with the CEO.",
-  },
-];
+    name: "chronic back pain",
+    medicine: ["ibuprofen", "naproxen"],
+  }
+]

@@ -45,6 +45,7 @@ export default function HomePage() {
     domain: "",
     prompt: "",
     first_message: "",
+    voice: "Helena", // Default voice
   });
 
   // Fetch agents on component mount
@@ -96,6 +97,7 @@ export default function HomePage() {
           name: formData.name,
           prompt: formData.prompt,
           first_message: formData.first_message,
+          voice: formData.voice,
         });
 
         if (newAgent) {
@@ -113,6 +115,7 @@ export default function HomePage() {
             domain: "",
             prompt: "",
             first_message: "",
+            voice: "Helena",
           });
           setIsDialogOpen(false);
         } else {
@@ -226,6 +229,27 @@ export default function HomePage() {
                     }
                     placeholder="Enter first message"
                   />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="voice">Voice</Label>
+                  <Select
+                    value={formData.voice}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, voice: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select voice" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Thalia">Thalia</SelectItem>
+                      <SelectItem value="Andromeda">Andromeda</SelectItem>
+                      <SelectItem value="Helena">Helena</SelectItem>
+                      <SelectItem value="Apollo">Apollo</SelectItem>
+                      <SelectItem value="Arcas">Arcas</SelectItem>
+                      <SelectItem value="Aries">Aries</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="flex justify-end gap-2">

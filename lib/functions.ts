@@ -1,11 +1,12 @@
 import { AgentResponse } from "./mock-data";
 
-const token = process.env.OPENMIC_API_KEY;
+const token = process.env.NEXT_PUBLIC_OPENMIC_API_KEY 
 
 export interface OpenMicAgent {
   name: string;
   prompt: string;
   first_message: string;
+  voice: string;
 }
 
 export interface CallLog {
@@ -69,7 +70,7 @@ export const createAgent = async (
     prompt: agent.prompt,
     first_message: agent.first_message,
     voice_provider: "OpenAI",
-    voice: "alloy",
+    voice: agent.voice,
     voice_model: "tts-1",
     voice_speed: 1,
     llm_model_name: "gpt-4",
